@@ -4,9 +4,23 @@ import { FlexBox, Hilight, Layout, Section, Text } from "./style";
 import { graphql, useStaticQuery } from "gatsby";
 
 const MainContainer = () => {
-  const [height, setHeight] = useState<number>(window.innerHeight);
-  const [width, setWidth] = useState<string>(`${window.innerWidth}px`);
-  const [scrollPosition, setScrollPosition] = useState<number>(window.scrollY);
+  useEffect(() => {
+    if (typeof window !== `undefined`) {
+      setHeight(window.innerHeight);
+      setWidth(`${window.innerWidth}px`);
+      window.onscroll = () => {
+        setScrollPosition(window.scrollY);
+      };
+      window.onresize = () => {
+        setHeight(window.innerHeight);
+        setWidth(`${window.innerWidth}px`);
+      };
+    }
+  }, []);
+
+  const [height, setHeight] = useState<number>(0);
+  const [width, setWidth] = useState<string>(`${0}px`);
+  const [scrollPosition, setScrollPosition] = useState<number>(0);
   const [openSong, setOpenSong] = useState<boolean>(false);
   const data = useStaticQuery(graphql`
     {
@@ -20,15 +34,7 @@ const MainContainer = () => {
       }
     }
   `);
-  useEffect(() => {
-    window.onscroll = () => {
-      setScrollPosition(window.scrollY);
-    };
-    window.onresize = () => {
-      setHeight(window.innerHeight);
-      setWidth(`${window.innerWidth}px`);
-    };
-  }, []);
+
   useEffect(() => {
     if (scrollPosition / height > 3.5) {
       setOpenSong(true);
