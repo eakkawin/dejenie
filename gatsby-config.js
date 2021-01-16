@@ -8,6 +8,13 @@ module.exports = {
         allExtensions: true, // defaults to false
       },
     },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `sound`,
+        path: `${__dirname}/src/sound/`,
+      },
+    },
     `gatsby-plugin-styled-components`,
     `gatsby-plugin-netlify-cms`,
   ],
