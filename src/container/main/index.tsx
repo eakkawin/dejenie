@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { FontWeight } from "./constant";
-import { FlexBox, Hilight, Layout, Section, Text } from "./style";
+import {
+  FlexBox,
+  Hilight,
+  Layout,
+  Section,
+  Text,
+  NextPageButton,
+} from "./style";
 import { graphql, useStaticQuery } from "gatsby";
 
 const MainContainer = () => {
@@ -22,6 +29,7 @@ const MainContainer = () => {
   const [width, setWidth] = useState<string>(`${0}px`);
   const [scrollPosition, setScrollPosition] = useState<number>(0);
   const [openSong, setOpenSong] = useState<boolean>(false);
+  const [showGoDown, setShowGoDown] = useState<boolean>(true);
   const data = useStaticQuery(graphql`
     {
       allFile(filter: { extension: { eq: "mp3" } }) {
@@ -36,12 +44,21 @@ const MainContainer = () => {
   `);
 
   useEffect(() => {
-    if (scrollPosition / height > 3.5) {
-      setOpenSong(true);
-    } else {
-      setOpenSong(false);
-    }
+    const onLastPage = scrollPosition / height > 3.5;
+    setOpenSong(onLastPage);
+    setShowGoDown(onLastPage);
   }, [scrollPosition, height]);
+
+  const moveToNextPage = () => {
+    if (scrollPosition / height < 3.5) {
+      const page = Math.floor(scrollPosition / height) + 1;
+      window.scrollTo({
+        top: height * page,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
     <Layout
       flexDirection="column"
@@ -50,6 +67,7 @@ const MainContainer = () => {
       scrollPosition={scrollPosition}
     >
       <Section
+        id="1ST"
         flexDirection="column"
         justifyContent="center"
         width={width}
@@ -61,8 +79,15 @@ const MainContainer = () => {
         <Text margin="0px 2rem" size={1} weight={FontWeight.bold}>
           WELCOME PEOPLE.
         </Text>
+        <NextPageButton
+          showGoDown={showGoDown}
+          onClick={() => moveToNextPage()}
+        >
+          GO DOWN
+        </NextPageButton>
       </Section>
       <Section
+        id="2ND"
         flexDirection="column"
         justifyContent="center"
         alignItems="center"
@@ -73,7 +98,7 @@ const MainContainer = () => {
           2ND
         </Text>
         <Text size={2} weight={FontWeight.bold}>
-          WHAT DO YOU WANT ?
+          TODAY IS YOUR BIRTHDAY !?
         </Text>
       </Section>
       <Section
@@ -87,7 +112,7 @@ const MainContainer = () => {
           3RD
         </Text>
         <Text margin="0px 2rem" size={3} weight={FontWeight.bold}>
-          TODAY IS YOUR BIRTHDAY !?
+          LET ME PREPARE SOMETHING FOR YOU
         </Text>
       </Section>
       <Section
@@ -120,17 +145,12 @@ const MainContainer = () => {
           5TH
         </Text>
         <FlexBox>
-          <Hilight
-            textAlign="center"
-            size={5}
-            weight={FontWeight.bold}
-            bgColor="#eb0165"
-          >
+          <Text textAlign="center" size={5} weight={FontWeight.bold}>
             HAPPY BIRTHDAY
-          </Hilight>
+          </Text>
           <Hilight
             textAlign="center"
-            bgColor="#65eb01"
+            bgColor="#ff8c00"
             size={5}
             weight={FontWeight.bold}
           >
@@ -138,7 +158,7 @@ const MainContainer = () => {
           </Hilight>
         </FlexBox>
         {openSong ? (
-          data.allFile.edges.map((file, index) => {
+          data.allFile.edges.map((file) => {
             return (
               <audio autoPlay controls loop src={file.node.publicURL}>
                 Your browser does not support the

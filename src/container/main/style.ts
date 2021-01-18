@@ -43,10 +43,10 @@ export const Layout = styled(FlexBox)<{
     } else if (currentPage < 3.5) {
       return "#01eb87";
     } else {
-      return "#8701eb";
+      return "#fff";
     }
   }};
-  transition: background-color 2s ease;
+  transition: background-color 1s ease;
 `;
 export const Text = styled(FlexBox)<{
   size?: number;
@@ -64,4 +64,23 @@ export const Hilight = styled(Text)<{
   bgColor: string;
 }>`
   background-color: ${(props) => props.bgColor || "transparent"};
+`;
+
+export const NextPageButton = styled.div<{ showGoDown: boolean }>`
+  display: block;
+  border-radius: 50%;
+  border: 0;
+  background-color: transparent;
+  position: fixed;
+  bottom: 30px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 1;
+  cursor: pointer;
+  ${(props) => (props.showGoDown ? `cursor: default;opacity: 0;` : "")}
+  :hover {
+    font-size: 120%;
+  }
+  transition: visibility 0s, opacity 0.5s linear, font-size 1s ease;
 `;
