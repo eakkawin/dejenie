@@ -15,6 +15,7 @@ const MainContainer = () => {
     if (typeof window !== `undefined`) {
       setHeight(window.innerHeight);
       setWidth(`${window.innerWidth}px`);
+      setLoading(false);
       window.onscroll = () => {
         setScrollPosition(window.scrollY);
       };
@@ -25,6 +26,7 @@ const MainContainer = () => {
     }
   }, []);
 
+  const [loading, setLoading] = useState<boolean>(true);
   const [height, setHeight] = useState<number>(0);
   const [width, setWidth] = useState<string>(`${0}px`);
   const [scrollPosition, setScrollPosition] = useState<number>(0);
@@ -59,7 +61,11 @@ const MainContainer = () => {
     }
   };
 
-  return (
+  return loading ? (
+    <FlexBox width="100%" justifyContent="center">
+      <Text size={2}>loading...</Text>
+    </FlexBox>
+  ) : (
     <Layout
       flexDirection="column"
       height={height}
